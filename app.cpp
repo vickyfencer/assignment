@@ -136,7 +136,7 @@ private:
         return ((dec / 10) << 4) | (dec % 10);
     }
 };
-} /* namespace EE513 */
+} 
 
 int main() {
     // Initialize DS3231 object with the appropriate bus and device numbers
@@ -155,22 +155,18 @@ int main() {
 
     // Verify the new time and date has been set
    std::cout << "New Time and Date:" << std::endl;
-  rtc.readAndDisplayTimeDate();
-//std::cout << "Alarm1 triggered" << std::endl;
-
-//rtc.debugDumpRegisters(14);
-  // rtc.setAlarmEverySecond();
-
-//rtc.debugDumpRegisters(14);
- //rtc.clearInterruptFlag();
-//std::cout << "Alarm2 triggered" << std::endl;
-//rtc.debugDumpRegisters(14);
-//rtc.setAlarmEveryminute();
-// rtc.clearInterruptFlag();
-//std::this_thread::sleep_for(std::chrono::seconds(2));
+rtc.readAndDisplayTimeDate();
+std::cout << "Alarm1 triggered" << std::endl;
+rtc.debugDumpRegisters(14);
+rtc.setAlarmEverySecond();
+rtc.debugDumpRegisters(14);
+rtc.clearInterruptFlag();
+std::cout << "Alarm2 triggered" << std::endl;
+rtc.setAlarmEveryminute();
+ rtc.clearInterruptFlag();
+std::this_thread::sleep_for(std::chrono::seconds(2));
  rtc.enableSquareWaveOutput();
-
-// rtc.monitorFridgeTemperature();
+rtc.monitorFridgeTemperature();
 
 
     return 0;
