@@ -8,7 +8,7 @@ class DS3231 : public I2CDevice {
 public:
     DS3231(unsigned int bus, unsigned int device) : I2CDevice(bus, device) {}
 
-    // Read and display the current RTC module time and date
+    // Read and display the current detect module time and date
     void readAndDisplayTimeDate() {
         unsigned char *timeDate = readRegisters(7, 0x00); // Read time and date registers starting from address 0x00
         // time and date values
@@ -43,7 +43,7 @@ for (int i = 0; i < 7; ++i) {
 
 
 }
-// Function to enable square-wave output at 1Hz on the RTC module
+// Function to enable square-wave output at 1Hz on the detect module
 void enableSquareWaveOutput() {
         // Set SQWEN (Square Wave Output Enable) bit (bit 4) and clear RS2 and RS1 bits to set 1Hz frequency
         writeRegister(0x0E, 0x00); // Control register address is 0x0E
@@ -55,17 +55,9 @@ void enableSquareWaveOutput() {
         writeRegister(0x08, 0b10000000); // Minutes
         writeRegister(0x09, 0b10000000);
         writeRegister(0x0A, 0b10000000);
-
-std::cout<< "1AM"<< std::bitset<8> (readRegister(0x07))<<std::endl;
-std::cout<< "2AM"<< std::bitset<8> (readRegister(0x08))<<std::endl;
-std::cout<< "3AM"<< std::bitset<8> (readRegister(0x09))<<std::endl;
-std::cout<< "4AM"<< std::bitset<8> (readRegister(0x0A))<<std::endl;
-
-
     }
 void setAlarmEveryminute() {
 unsigned int a,b,c,d ;
-//std::cout<< "BeforeContReg"<< std::bitset<8> (readRegister(0x0E))<<std::endl;
 
 writeRegister(0x0E, 0b00011111);  // Set Alarm 1 registers to trigger every second (A1M4-A1M1: 1111)
  a =readRegister(0x0B);
@@ -78,11 +70,6 @@ writeRegister(0x0C,b);
 c|= 0b10000000; // A1M1-A1M4: 1111 (Every second)
 writeRegister(0x0D,c);
 
-std::cout<< "ContReg"<< std::bitset<8> (readRegister(0x0E))<<std::endl;
-
-std::cout<< "11AM"<< std::bitset<8> (readRegister(0x0B))<<std::endl;
-std::cout<< "22AM"<< std::bitset<8> (readRegister(0x0C))<<std::endl;
-std::cout<< "33AM"<< std::bitset<8> (readRegister(0x0D))<<std::endl;
 }
   // Read and display the current temperature
     float  readAndDisplayTemperature() {
@@ -140,33 +127,33 @@ private:
 
 int main() {
     // Initialize DS3231 object with the appropriate bus and device numbers
-    EE513::DS3231 rtc(1, 0x68);
+    EE513::DS3231 detect(1, 0x68);
 
     // Read and display the current time and date
     std::cout << "Current Time and Date:" << std::endl;
-    rtc.readAndDisplayTimeDate();
+    detect.readAndDisplayTimeDate();
 
     // Read and display the current temperature
     std::cout << "Current Temperature:" << std::endl;
-  rtc.readAndDisplayTemperature();
+  detect.readAndDisplayTemperature();
 
    // Set a new time and date (e.g., February 28, 2024, 15:30:00, Wednesday)
-   rtc.setTimeDate(24, 2, 28, 3, 15, 30, 0);
+   detect.setTimeDate(24, 2, 28, 3, 15, 30, 0);
 
     // Verify the new time and date has been set
    std::cout << "New Time and Date:" << std::endl;
-rtc.readAndDisplayTimeDate();
+detect.readAndDisplayTimeDate();
 std::cout << "Alarm1 triggered" << std::endl;
-rtc.debugDumpRegisters(14);
-rtc.setAlarmEverySecond();
-rtc.debugDumpRegisters(14);
-rtc.clearInterruptFlag();
+detect.debugDumpRegisters(14);
+detect.setAlarmEverySecond();
+detect.debugDumpRegisters(14);
+detect.clearInterruptFlag();
 std::cout << "Alarm2 triggered" << std::endl;
-rtc.setAlarmEveryminute();
- rtc.clearInterruptFlag();
-std::this_thread::sleep_for(std::chrono::seconds(2));
- rtc.enableSquareWaveOutput();
-rtc.monitorFridgeTemperature();
+detect.setAlarmEveryminute();
+ detect.clearInterruptFlag();
+std::this_thread::sleep_for(std::chrono::seconds(2));//delay added to show the alarm is working
+ detect.enableSquareWaveOutput();
+detect.monitorFridgeTemperature();
 
 
     return 0;
